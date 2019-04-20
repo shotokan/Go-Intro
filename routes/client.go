@@ -34,19 +34,26 @@ func (c *ClientServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if len(b) > 0 {
 			// si en body vienen datos (debe venir el id) se ejecuta la búsqueda por id
 			var payload BodyService
+			// convierte un tipo bytes (con formato json) a un tipo struct
 			err = json.Unmarshal(b, &payload)
 			if err != nil {
+				// imprime todo el stack de errores
+				fmt.Printf("%+v\n", err)
+				// Imprime cual fue el primer error
 				fmt.Println(errors.Cause(err))
 				http.Error(w, err.Error(), 500)
 				return
 			}
 			resp, err := controllers.GetClient(payload.ID)
 			if err != nil {
+				// imprime todo el stack de errores
 				fmt.Printf("%+v\n", err)
+				// Imprime cual fue el primer error
 				fmt.Println(errors.Cause(err))
 				http.Error(w, err.Error(), 400)
 				return
 			}
+			// codifica una estructura a una cadena json y la devuelve como respuesta
 			if err := json.NewEncoder(w).Encode(resp); err != nil {
 				fmt.Printf("%+v\n", err)
 				fmt.Println(errors.Cause(err))
@@ -62,6 +69,7 @@ func (c *ClientServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), 400)
 				return
 			}
+			// codifica una estructura a una cadena json y la devuelve como respuesta
 			if err := json.NewEncoder(w).Encode(resp); err != nil {
 				fmt.Printf("%+v\n", err)
 				fmt.Println(errors.Cause(err))
