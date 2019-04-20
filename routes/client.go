@@ -12,7 +12,7 @@ import (
 )
 
 // Body contains the id
-type Body struct {
+type BodyService struct {
 	ID string `json:"id"`
 }
 
@@ -32,7 +32,8 @@ func (c *ClientServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("content-type", "application/json")
 		if len(b) > 0 {
-			var payload Body
+			// si en body vienen datos (debe venir el id) se ejecuta la búsqueda por id
+			var payload BodyService
 			err = json.Unmarshal(b, &payload)
 			if err != nil {
 				fmt.Println(errors.Cause(err))
@@ -53,6 +54,7 @@ func (c *ClientServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		} else {
+			// Si no tiene datos el body, se devuelve un arreglo
 			resp, err := controllers.GetClients()
 			if err != nil {
 				fmt.Printf("%+v\n", err)
